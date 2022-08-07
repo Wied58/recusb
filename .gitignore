@@ -1,3 +1,4 @@
+*.csv
 ReceiveAndWrite.py
 recusb2.py
 StartLog.sh
