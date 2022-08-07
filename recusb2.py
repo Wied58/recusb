@@ -1,5 +1,6 @@
 #https://forums.raspberrypi.com/viewtopic.php?t=106468
 
+# test comment
 
 import serial, string
 
