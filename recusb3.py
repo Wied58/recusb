@@ -17,7 +17,7 @@ while True:
    # https://stackoverflow.com/questions/41918836/how-do-i-get-rid-of-the-b-prefix-in-a-string-in-python
 
    dline = line.decode('utf-8')
-   #print (line.decode('utf-8'), end ='')
+
    print (dline, end ='')
    spline = dline.split(',')
    print(spline[0])
