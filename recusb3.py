@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os, sys
 import serial
 import time
@@ -8,7 +10,7 @@ time_now  = datetime.datetime.now().strftime('%m_%d_%Y_%H_%M_%S')
 print(time_now)
 
 #ser = serial.Serial('/dev/ttyUSB0',19200, timeout = 5)
-ser = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=10)
+ser = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=20)
 
 with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData:
 
