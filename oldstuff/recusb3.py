@@ -7,6 +7,8 @@ import datetime
 
 time_now  = datetime.datetime.now().strftime('%m_%d_%Y_%H_%M_%S') 
 
+adler_lat = "41d 51m 59s N"
+adler_long = "87d 26m 28s W"
 print(time_now)
 
 #ser = serial.Serial('/dev/ttyUSB0',19200, timeout = 5)
