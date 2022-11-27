@@ -15,13 +15,14 @@ gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE)
 time_now  = datetime.datetime.now().strftime('%m_%d_%Y_%H_%M_%S') 
 print(time_now)
 
-adler_lat = 31.88287429
-adler_long = -81.63445874
+#adler_lat = 31.88287429
+#adler_long = -81.63445874
 
 #ser = serial.Serial('/dev/ttyUSB0',19200, timeout = 5)
 ser = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=20)
 
-with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData:
+with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData,\
+open('OutgoingData_' + time_now + '.csv', 'a') as OutgoingData:
 
    # listen for the input, exit if nothing received in timeout period
 
@@ -30,7 +31,7 @@ with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData:
       line = ser.readline()
    
       if len(line) == 0:
-         print("Time out! Exit.\n")
+         print("No Incoming Serial Data Exit.\n")
          sys.exit()
    
       # the decode is explained here:
@@ -51,6 +52,7 @@ with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData:
       spline = dline.split(',')
       #print(spline[0], spline[1], spline[2])
 
+      OutgoingData.write(f"Target cooridinates: {spline[0]}, {spline[1]}, {spline[2]}\n")
       print(f"Target cooridinates: {spline[0]}, {spline[1]}, {spline[2]}")
 
       #report = gpsd.next()
@@ -68,6 +70,8 @@ with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData:
    
            break
 
+
+      OutgoingData.write(f"Local cooridinates: {GPSTime}, {GPSLat}, {GPSLong}, {GPSAlt}\n")
       print(f"Local cooridinates: {GPSTime}, {GPSLat}, {GPSLong}, {GPSAlt}")
 
       coords_1 = (spline[1], spline[2])
@@ -79,8 +83,12 @@ with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData:
          print("******************************** An exception occurred ************************************")
          print("ValueError('Latitude must be in the [-90; 90] range.'")
          print("********************************************************************************************\n")
+
+      OutgoingData.write(f"miles = {miles}\n")
       print(f"miles = {miles}")
+      OutgoingData.write("\n")
       print()
+      
+      ser.flushInput()
 
-
-
+ser.close()             # close port
