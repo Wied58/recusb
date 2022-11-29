@@ -1,3 +1,4 @@
+#https://stackoverflow.com/questions/17624310/geopy-calculating-gps-heading-bearing
 import math
 import numpy as np
 

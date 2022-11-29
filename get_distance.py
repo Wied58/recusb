@@ -6,6 +6,7 @@ import time
 import datetime
 import geopy.distance
 from setup_gpsd import *
+#from oled_display import * 
 #import math
 #import numpy as np
 
@@ -14,8 +15,8 @@ from get_bearing import get_bearing
 time.sleep(1)
 
 
-time_now  = datetime.datetime.now().strftime('%m_%d_%Y_%H_%M_%S') 
-print(time_now)
+file_time  = datetime.datetime.now().strftime('%m_%d_%Y_%H_%M_%S') 
+print(file_time)
 
 #adler_lat = 31.88287429
 #adler_long = -81.63445874
@@ -23,8 +24,9 @@ print(time_now)
 #ser = serial.Serial('/dev/ttyUSB0',19200, timeout = 5)
 ser = serial.Serial('/dev/ttyUSB0', 9600, 8, 'N', 1, timeout=20)
 
-with open('IncomingData_' + time_now + '.csv', 'a') as IncomingData,\
-open('OutgoingData_' + time_now + '.csv', 'a') as OutgoingData:
+with open('IncomingData_' + file_time + '.csv', 'a') as IncomingData,\
+open('OutgoingData_' + file_time + '.txt', 'a') as OutgoingData,\
+open('DisplayData_' + file_time + '.csv', 'a') as DisplayData:
 
    # listen for the input, exit if nothing received in timeout period
 
@@ -57,18 +59,30 @@ open('OutgoingData_' + time_now + '.csv', 'a') as OutgoingData:
       #report = gpsd.next()
       #print(report['class'])
     
-      while True:
-         report = gpsd.next()
-         print(report['class'])
-         if report['class'] == 'TPV':
-           GPSTime = getattr(report,'time','')
-           GPSLat = getattr(report,'lat',0.0)
-           GPSLong = getattr(report,'lon',0.0)
-           GPSAlt = getattr(report,'alt','nan')
-           GPSMode = getattr(report,'mode','nan')
-   
-           break
 
+      if len(sys.argv) > 1:
+
+        #adler_lat = 31.88287429
+        #adler_long = -81.63445874
+
+        GPSTime = "2022-11-27T16:21:54.000"
+        GPSLat = 31.88287429
+        GPSLong =  -75.63445874 
+        GPSAlt = 200
+
+      else:
+
+         while True:
+            report = gpsd.next()
+            print(report['class'])
+            if report['class'] == 'TPV':
+              GPSTime = getattr(report,'time','')
+              GPSLat = getattr(report,'lat',0.0)
+              GPSLong = getattr(report,'lon',0.0)
+              GPSAlt = getattr(report,'alt','nan')
+              GPSMode = getattr(report,'mode','nan')
+      
+              break
 
       OutgoingData.write(f"Local cooridinates: {GPSTime}, {GPSLat}, {GPSLong}, {GPSAlt}\n")
       print(f"Local cooridinates: {GPSTime}, {GPSLat}, {GPSLong}, {GPSAlt}")
@@ -96,8 +110,14 @@ open('OutgoingData_' + time_now + '.csv', 'a') as OutgoingData:
 
       OutgoingData.write("\n")
 
+      # LGPSTime, miles, bearing, LGPSLat, LGPSLong, LGPSAlt, RGPSLat, RGPSLong, RGPSTime, RGPSAlt
+      for_display = [GPSTime,miles,bearing,GPSLat,GPSLong,GPSAlt,spline[1],spline[2],spline[4]]
+      DisplayData.write(f"{for_display}\n")
+      print(for_display)
       print()
       
       ser.flushInput()
+
+
 
 ser.close()             # close port
