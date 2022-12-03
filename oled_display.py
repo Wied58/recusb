@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# https://stackoverflow.com/questions/46258499/how-to-read-the-last-line-of-a-file-in-python
+
 import os
 import sys
 import time
